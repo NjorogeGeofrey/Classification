@@ -1,0 +1,29 @@
+library(tidyverse)
+library(skimr)
+install.packages("RWeka", lib="/path/to/library")
+library(gmodels)
+library(C50)
+glimpse(mushrooms)
+mushrooms <-mushrooms %>% rename(type = class)
+mushrooms$type <- factor(mushrooms$type, levels = c("p", "e"),
+                         labels = c("poisonus", "edible"))
+head(mushrooms)
+mushrooms <- mushrooms %>% 
+  mutate_if(is.character, as.factor)
+glimpse(mushrooms)
+levels(mushrooms$veil.type)
+levels(mushrooms$veil.color)
+skim(mushrooms)
+unique(mushrooms)
+mushrooms$veil.type <- NULL
+glimpse(mushrooms)
+mush_train <- mushrooms[1:7000,]
+mush_test <-  mushrooms[7001:8124, ]
+table(mushrooms$type)
+mush_model <- C5.0(mush_train[-1], mush_train$type)
+mush_model
+summary(mush_model)
+mush_pred <- predict(mush_model, mush_test)
+CrossTable( mush_test$type, mush_pred, prop.chisq = FALSE,
+           prop.r = FALSE, prop.c = FALSE,
+           dnn = c("actual type", "predicted type"))

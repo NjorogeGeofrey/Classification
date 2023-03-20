@@ -1,6 +1,5 @@
 library(tidyverse)
 library(skimr)
-install.packages("RWeka", lib="/path/to/library")
 library(gmodels)
 library(C50)
 glimpse(mushrooms)
